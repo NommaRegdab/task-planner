@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Simple Nested Task Planner</title>
+    <style>
+        body { font-family: -apple-system, Arial, sans-serif; margin: 0; padding: 10px; background: #1c1c1e; color: #fff; }
+        #projects { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 20px; }
+        .project { flex: 0 0 auto; width: 300px; background: #2c2c2e; border-radius: 10px; padding: 10px; min-height: 200px; }
+        .project h2 { font-size: 18px; margin: 0 0 10px; cursor: text; }
+        .project h2[contenteditable]:focus { outline: none; background: #3c3c3e; }
+        ul { list-style: none; padding-left: 0; }
+        li { margin: 8px 0; position: relative; }
+        .task { display: flex; align-items: center; cursor: pointer; padding: 8px; background: #3c3c3e; border-radius: 5px; }
+        .task input[type="checkbox"] { margin-right: 10px; width: 20px; height: 20px; }
+        .task span { flex: 1; min-height: 20px; }
+        .task.completed span { text-decoration: line-through; color: #888; }
+        .collapse-arrow { margin-right: 10px; font-size: 14px; }
+        .add-btn { background: #4285F4; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 16px; margin-bottom: 10px; }
+        .add-btn:hover { background: #357AE8; }
+        .subtasks { padding-left: 20px; display: none; }
+        .expanded .subtasks { display: block; }
+        .draggable { cursor: move; touch-action: manipulation; }
+        @media (prefers-color-scheme: light) {
+            body { background: #fff; color: #000; }
+            .project { background: #f9f9f9; }
+            .task { background: #e9e9e9; }
+            .project h2[contenteditable]:focus { background: #d9d9d9; }
+        }
+        @media (max-width: 600px) { .project { width: 100%; } #projects { flex-direction: column; } }
+    </style>
+</head>
+<body>
+    <h1 style="font-size: 24px; margin-bottom: 10px;">Task Planner</h1>
+    <button class="add-btn" onclick="addProject()">+ Add Project</button>
+    <div id="projects"></div>
+
+    <script>
+        const projectsContainer = document.getElementById('projects');
+
+        function createProject(name = 'New Project') {
+            const projectDiv = document.createElement('div');
+            projectDiv.classList.add('project', 'draggable');
+            projectDiv.draggable = true;
+
+            const header = document.createElement('h2');
+            header.contentEditable = true;
+            header.textContent = name;
+            header.onblur = saveProjects;
+
+            const addTaskBtn = document.createElement('button');
+            addTaskBtn.classList.add('add-btn');
+            addTaskBtn.textContent = '+ Add Task';
+            addTaskBtn.onclick = () => addTaskTo(projectDiv);
+
+            const taskList = document.createElement('ul');
+            taskList.classList.add('taskList');
+
+            projectDiv.appendChild(header);
+            projectDiv.appendChild(addTaskBtn);
+            projectDiv.appendChild(taskList);
+            return projectDiv;
+        }
+
+        function addProject() {
+            const name = prompt('Enter project name:', 'New Project');
+            if (name) {
+                const newProject = createProject(name);
+                projectsContainer.appendChild(newProject);
+                saveProjects();
+            }
+        }
+
+        function createTask(text = 'New Task') {
+            const li = document.createElement('li');
+            li.classList.add('draggable');
+            li.draggable = true;
+
+            const taskDiv = document.createElement('div');
+            taskDiv.classList.add('task');
+
+            const arrow = document.createElement('span');
+            arrow.classList.add('collapse-arrow');
+            arrow.textContent = '▶';
+            arrow.onclick = toggleCollapse;
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.onchange = toggleComplete;
+
+            const span = document.createElement('span');
+            span.contentEditable = true;
+            span.textContent = text;
+            span.onkeydown = handleEnter;
+
+            const addSubBtn = document.createElement('button');
+            addSubBtn.classList.add('add-btn');
+            addSubBtn.textContent = '+ Sub';
+            addSubBtn.onclick = () => addTaskTo(li.parentElement.parentElement, li, true);
+
+            taskDiv.appendChild(arrow);
+            taskDiv.appendChild(checkbox);
+            taskDiv.appendChild(span);
+            taskDiv.appendChild(addSubBtn);
+
+            const subtasksUl = document.createElement('ul');
+            subtasksUl.classList.add('subtasks');
+
+            li.appendChild(taskDiv);
+            li.appendChild(subtasksUl);
+            return li;
+        }
+
+        function addTaskTo(projectDiv, parentLi = null, isSubtask = false) {
+            const taskList = isSubtask ? parentLi.querySelector('.subtasks') : projectDiv.querySelector('.taskList');
+            const newTask = createTask(isSubtask ? 'New Subtask' : 'New Task');
+            taskList.appendChild(newTask);
+            if (isSubtask) {
+                parentLi.classList.add('expanded');
+                parentLi.querySelector('.collapse-arrow').textContent = '▼';
+            }
+            saveProjects();
+        }
+
+        function toggleCollapse(e) {
+            e.stopPropagation();
+            const li = this.parentElement.parentElement;
+            li.classList.toggle('expanded');
+            this.textContent = li.classList.contains('expanded') ? '▼' : '▶';
+        }
+
+        function toggleComplete() {
+            const taskDiv = this.parentElement;
+            taskDiv.classList.toggle('completed', this.checked);
+            saveProjects();
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const li = this.parentElement.parentElement;
+                const isSub = li.parentElement.classList.contains('subtasks');
+                const projectDiv = getProjectDiv(li);
+                addTaskTo(projectDiv, isSub ? li.parentElement.parentElement : null, isSub);
+                const newSpan = li.nextSibling ? li.nextSibling.querySelector('span') : taskList.lastChild.querySelector('span');
+                newSpan.focus();
+            }
+        }
+
+        function getProjectDiv(element) {
+            while (element && !element.classList.contains('project')) {
+                element = element.parentElement;
+            }
+            return element;
+        }
+
+        function saveProjects() {
+            const projectsData = Array.from(projectsContainer.children).map(project => ({
+                name: project.querySelector('h2').textContent,
+                tasks: project.querySelector('.taskList').innerHTML
+            }));
+            localStorage.setItem('projects', JSON.stringify(projectsData));
+        }
+
+        function loadProjects() {
+            const saved = localStorage.getItem('projects');
+            if (saved) {
+                const projectsData = JSON.parse(saved);
+                projectsData.forEach(data => {
+                    const newProject = createProject(data.name);
+                    newProject.querySelector('.taskList').innerHTML = data.tasks;
+                    projectsContainer.appendChild(newProject);
+                    // Re-attach events
+                    newProject.querySelectorAll('.collapse-arrow').forEach(arrow => arrow.onclick = toggleCollapse);
+                    newProject.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.onchange = toggleComplete);
+                    newProject.querySelectorAll('span[contenteditable]').forEach(span => span.onkeydown = handleEnter);
+                    newProject.querySelectorAll('.add-btn').forEach(btn => {
+                        if (btn.textContent === '+ Add Task') btn.onclick = () => addTaskTo(newProject);
+                        else btn.onclick = (e) => {
+                            const li = e.target.closest('li');
+                            addTaskTo(newProject, li, true);
+                        };
+                    });
+                });
+            }
+        }
+
+        function setupDragAndDrop(container) {
+            container.addEventListener('dragstart', e => {
+                if (e.target.classList.contains('draggable')) {
+                    e.target.classList.add('dragging');
+                    e.dataTransfer.setData('text/plain', '');
+                }
+            });
+            container.addEventListener('dragover', e => e.preventDefault());
+            container.addEventListener('drop', e => {
+                e.preventDefault();
+                const dragging = document.querySelector('.dragging');
+                if (dragging) {
+                    const afterElement = getDragAfterElement(container, e.clientX || e.touches?.[0].clientX);
+                    if (afterElement == null) {
+                        container.appendChild(dragging);
+                    } else {
+                        container.insertBefore(dragging, afterElement);
+                    }
+                    dragging.classList.remove('dragging');
+                    saveProjects();
+                }
+            });
+        }
+
+        function getDragAfterElement(container, x) {
+            const draggableElements = [...container.querySelectorAll('.draggable:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = x - box.left - box.width / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        loadProjects();
+        setupDragAndDrop(projectsContainer);
+        document.querySelectorAll('.taskList, .subtasks').forEach(ul => setupDragAndDrop(ul));
+    </script>
+</body>
+</html>
