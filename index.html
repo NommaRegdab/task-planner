@@ -16,33 +16,32 @@
         ul { list-style: none; padding-left: 0; }
         li { margin: 8px 0; position: relative; }
         .task { display: flex; align-items: center; cursor: pointer; padding: 8px; border-radius: 5px; position: relative; }
-        .task::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background-color: var(--sibling-color); }
+        .task::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background-color: var(--level-color); }
         .task input[type="checkbox"] { margin: 0 5px 0 0; width: 20px; height: 20px; }
         .task span { flex: 1; min-height: 20px; }
         .task.completed span { text-decoration: line-through; color: #888; }
         .collapse-arrow { margin: 0 5px 0 0; font-size: 14px; }
         .delete-btn { background: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 5px; cursor: pointer; margin-left: 5px; font-size: 12px; }
         .delete-btn:hover { background: #c0392b; }
-        .add-btn { background: #4285F4; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 16px; margin-bottom: 10px; margin-right: 5px; }
+        .add-btn { background: #4285F4; color: white; border: none; padding: 4px 8px; border-radius: 5px; cursor: pointer; font-size: 12px; margin-left: 5px; }
         .add-btn:hover { background: #357AE8; }
         .add-category-btn { background: #2ecc71; color: white; }
         .add-category-btn:hover { background: #27ae60; }
         .subtasks { padding-left: 20px; display: none; }
         .expanded .subtasks { display: block; }
         .draggable { cursor: move; touch-action: manipulation; }
-        .move-buttons { display: flex; }
-        .move-left, .move-right { background: #555; color: white; border: none; cursor: pointer; padding: 5px; margin-left: 5px; }
-        /* 10-level color theme */
-        .level-0 .task { background: #3c3c3e; }
-        .level-1 .task { background: #4a4a4a; }
-        .level-2 .task { background: #585858; }
-        .level-3 .task { background: #666666; }
-        .level-4 .task { background: #747474; }
-        .level-5 .task { background: #828282; }
-        .level-6 .task { background: #909090; }
-        .level-7 .task { background: #9e9e9e; }
-        .level-8 .task { background: #acacac; }
-        .level-9 .task { background: #bababa; }
+        .move-left, .move-right { background: #555; color: white; border: none; cursor: pointer; padding: 4px 8px; border-radius: 5px; margin-left: 5px; font-size: 12px; }
+        /* Level colors for background and left line */
+        .level-0 .task { background: #3c3c3e; --level-color: #ff0000; }
+        .level-1 .task { background: #4a4a4a; --level-color: #ff7f00; }
+        .level-2 .task { background: #585858; --level-color: #ffff00; }
+        .level-3 .task { background: #666666; --level-color: #7fff00; }
+        .level-4 .task { background: #747474; --level-color: #00ff00; }
+        .level-5 .task { background: #828282; --level-color: #00ff7f; }
+        .level-6 .task { background: #909090; --level-color: #00ffff; }
+        .level-7 .task { background: #9e9e9e; --level-color: #007fff; }
+        .level-8 .task { background: #acacac; --level-color: #0000ff; }
+        .level-9 .task { background: #bababa; --level-color: #7f00ff; }
         /* Checkbox colors matching levels */
         .level-0 input[type="checkbox"] { accent-color: #3c3c3e; }
         .level-1 input[type="checkbox"] { accent-color: #4a4a4a; }
@@ -54,31 +53,20 @@
         .level-7 input[type="checkbox"] { accent-color: #9e9e9e; }
         .level-8 input[type="checkbox"] { accent-color: #acacac; }
         .level-9 input[type="checkbox"] { accent-color: #bababa; }
-        /* Sibling colors (10 distinct colors) */
-        .sibling-0 { --sibling-color: #ff0000; }
-        .sibling-1 { --sibling-color: #ff7f00; }
-        .sibling-2 { --sibling-color: #ffff00; }
-        .sibling-3 { --sibling-color: #7fff00; }
-        .sibling-4 { --sibling-color: #00ff00; }
-        .sibling-5 { --sibling-color: #00ff7f; }
-        .sibling-6 { --sibling-color: #00ffff; }
-        .sibling-7 { --sibling-color: #007fff; }
-        .sibling-8 { --sibling-color: #0000ff; }
-        .sibling-9 { --sibling-color: #7f00ff; }
         /* Light mode adjustments */
         @media (prefers-color-scheme: light) {
             body { background: #fff; color: #000; }
             .project { background: #f9f9f9; }
-            .level-0 .task { background: #e9e9e9; }
-            .level-1 .task { background: #dcdcdc; }
-            .level-2 .task { background: #cfcfcf; }
-            .level-3 .task { background: #c2c2c2; }
-            .level-4 .task { background: #b5b5b5; }
-            .level-5 .task { background: #a8a8a8; }
-            .level-6 .task { background: #9b9b9b; }
-            .level-7 .task { background: #8e8e8e; }
-            .level-8 .task { background: #818181; }
-            .level-9 .task { background: #747474; }
+            .level-0 .task { background: #e9e9e9; --level-color: #ff0000; }
+            .level-1 .task { background: #dcdcdc; --level-color: #ff7f00; }
+            .level-2 .task { background: #cfcfcf; --level-color: #ffff00; }
+            .level-3 .task { background: #c2c2c2; --level-color: #7fff00; }
+            .level-4 .task { background: #b5b5b5; --level-color: #00ff00; }
+            .level-5 .task { background: #a8a8a8; --level-color: #00ff7f; }
+            .level-6 .task { background: #9b9b9b; --level-color: #00ffff; }
+            .level-7 .task { background: #8e8e8e; --level-color: #007fff; }
+            .level-8 .task { background: #818181; --level-color: #0000ff; }
+            .level-9 .task { background: #747474; --level-color: #7f00ff; }
             .delete-btn { background: #e74c3c; }
             .delete-btn:hover { background: #c0392b; }
             .level-0 input[type="checkbox"] { accent-color: #e9e9e9; }
@@ -93,18 +81,24 @@
             .level-9 input[type="checkbox"] { accent-color: #747474; }
         }
         @media (max-width: 600px) { .project { width: 100%; } #projects { flex-direction: column; } .move-left, .move-right { display: none; } }
-        #history-buttons { margin-bottom: 10px; }
+        #header-row { display: flex; align-items: center; margin-bottom: 10px; }
+        #header-row h1 { font-size: 24px; margin: 0 10px 0 0; }
+        #history-buttons { display: flex; }
         #undo-btn, #redo-btn { background: #555; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; margin-right: 5px; }
         #undo-btn:hover, #redo-btn:hover { background: #666; }
+        .add-projects-btn { background: #4285F4; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .add-projects-btn:hover { background: #357AE8; }
     </style>
 </head>
 <body>
-    <h1 style="font-size: 24px; margin-bottom: 10px;">Task Planner</h1>
-    <div id="history-buttons">
-        <button id="undo-btn" onclick="undo()">Undo</button>
-        <button id="redo-btn" onclick="redo()">Redo</button>
+    <div id="header-row">
+        <h1>Task Planner</h1>
+        <div id="history-buttons">
+            <button id="undo-btn" onclick="undo()">Undo</button>
+            <button id="redo-btn" onclick="redo()">Redo</button>
+        </div>
+        <button class="add-projects-btn" onclick="addProject()">+ Add Projects</button>
     </div>
-    <button class="add-btn" onclick="addProject()">+ Add Projects</button>
     <div id="projects"></div>
 
     <script>
@@ -148,31 +142,6 @@
             header.textContent = name;
             header.onblur = () => saveProjects(true);
 
-            const moveButtons = document.createElement('div');
-            moveButtons.classList.add('move-buttons');
-
-            const moveLeftBtn = document.createElement('button');
-            moveLeftBtn.classList.add('move-left');
-            moveLeftBtn.textContent = '←';
-            moveLeftBtn.onclick = () => moveProject(projectDiv, -1);
-
-            const moveRightBtn = document.createElement('button');
-            moveRightBtn.classList.add('move-right');
-            moveRightBtn.textContent = '→';
-            moveRightBtn.onclick = () => moveProject(projectDiv, 1);
-
-            moveButtons.appendChild(moveLeftBtn);
-            moveButtons.appendChild(moveRightBtn);
-
-            const deleteProjectBtn = document.createElement('button');
-            deleteProjectBtn.classList.add('delete-btn');
-            deleteProjectBtn.textContent = '×';
-            deleteProjectBtn.onclick = () => deleteElement(projectDiv);
-
-            headerDiv.appendChild(header);
-            headerDiv.appendChild(moveButtons);
-            headerDiv.appendChild(deleteProjectBtn);
-
             const addTaskBtn = document.createElement('button');
             addTaskBtn.classList.add('add-btn');
             addTaskBtn.textContent = '+ T';
@@ -185,12 +154,32 @@
             addCategoryBtn.title = 'Add Category';
             addCategoryBtn.onclick = () => addTaskTo(projectDiv, null, false, true);
 
+            const moveLeftBtn = document.createElement('button');
+            moveLeftBtn.classList.add('move-left');
+            moveLeftBtn.textContent = '←';
+            moveLeftBtn.onclick = () => moveProject(projectDiv, -1);
+
+            const moveRightBtn = document.createElement('button');
+            moveRightBtn.classList.add('move-right');
+            moveRightBtn.textContent = '→';
+            moveRightBtn.onclick = () => moveProject(projectDiv, 1);
+
+            const deleteProjectBtn = document.createElement('button');
+            deleteProjectBtn.classList.add('delete-btn');
+            deleteProjectBtn.textContent = '×';
+            deleteProjectBtn.onclick = () => deleteElement(projectDiv);
+
+            headerDiv.appendChild(header);
+            headerDiv.appendChild(addTaskBtn);
+            headerDiv.appendChild(addCategoryBtn);
+            headerDiv.appendChild(moveLeftBtn);
+            headerDiv.appendChild(moveRightBtn);
+            headerDiv.appendChild(deleteProjectBtn);
+
             const taskList = document.createElement('ul');
             taskList.classList.add('taskList', 'level-0');
 
             projectDiv.appendChild(headerDiv);
-            projectDiv.appendChild(addTaskBtn);
-            projectDiv.appendChild(addCategoryBtn);
             projectDiv.appendChild(taskList);
             return projectDiv;
         }
@@ -281,18 +270,7 @@
                 parentLi.classList.add('expanded');
                 parentLi.querySelector('.collapse-arrow').textContent = '▼';
             }
-            updateSiblingColors(taskList);
             saveProjects(true);
-        }
-
-        function updateSiblingColors(list) {
-            const siblings = Array.from(list.children);
-            siblings.forEach((sibling, index) => {
-                sibling.classList.remove(...Array.from({length: 10}, (_, i) => `sibling-${i}`));
-                sibling.classList.add(`sibling-${index % 10}`);
-                const subList = sibling.querySelector('.subtasks');
-                if (subList) updateSiblingColors(subList);
-            });
         }
 
         function getNestingLevel(element) {
@@ -320,7 +298,6 @@
             if (this.checked) {
                 list.appendChild(li);
             }
-            updateSiblingColors(list);
             saveProjects(true);
         }
 
@@ -400,10 +377,9 @@
                     });
                     newProject.querySelector('.move-left').onclick = () => moveProject(newProject, -1);
                     newProject.querySelector('.move-right').onclick = () => moveProject(newProject, 1);
-                    newProject.querySelectorAll('.taskList, .subtasks').forEach(ul => updateSiblingColors(ul));
                 });
             }
-            saveState(); // Initial state
+            saveState();
         }
 
         function deleteElement(element) {
@@ -452,7 +428,6 @@
                     }
                     dragging.classList.remove('dragging');
                     Array.from(container.querySelectorAll('li')).forEach(li => updateArrowVisibility(li));
-                    updateSiblingColors(container);
                     saveProjects(true);
                 }
             });
@@ -510,10 +485,7 @@
                 project.querySelector('.move-left').onclick = () => moveProject(project, -1);
                 project.querySelector('.move-right').onclick = () => moveProject(project, 1);
             });
-            document.querySelectorAll('.taskList, .subtasks').forEach(ul => {
-                setupDragAndDrop(ul);
-                updateSiblingColors(ul);
-            });
+            document.querySelectorAll('.taskList, .subtasks').forEach(ul => setupDragAndDrop(ul));
             setupDragAndDrop(projectsContainer);
         }
 
