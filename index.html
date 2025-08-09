@@ -1,4 +1,4 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,7 +10,8 @@
         body { font-family: -apple-system, Arial, sans-serif; margin: 0; padding: 10px; background: #1c1c1e; color: #fff; }
         #projects { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 20px; }
         .project { flex: 0 0 auto; width: 300px; background: #2c2c2e; border-radius: 10px; padding: 10px; min-height: 200px; position: relative; }
-        .project h2 { font-size: 18px; margin: 0 0 10px; cursor: text; }
+        .project-header { display: flex; justify-content: space-between; align-items: center; }
+        .project h2 { font-size: 18px; margin: 0; cursor: text; flex: 1; }
         .project h2[contenteditable]:focus { outline: none; background: #3c3c3e; }
         ul { list-style: none; padding-left: 0; }
         li { margin: 8px 0; position: relative; }
@@ -23,65 +24,120 @@
         .delete-btn:hover { background: #c0392b; }
         .add-btn { background: #4285F4; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 16px; margin-bottom: 10px; margin-right: 5px; }
         .add-btn:hover { background: #357AE8; }
+        .add-category-btn { background: #2ecc71; color: white; }
+        .add-category-btn:hover { background: #27ae60; }
         .subtasks { padding-left: 20px; display: none; }
         .expanded .subtasks { display: block; }
         .draggable { cursor: move; touch-action: manipulation; }
-        .move-left, .move-right { position: absolute; top: 5px; background: #555; color: white; border: none; cursor: pointer; padding: 5px; }
-        .move-left { left: -15px; }
-        .move-right { right: -15px; }
-        /* Nesting colors */
+        .move-buttons { display: flex; }
+        .move-left, .move-right { background: #555; color: white; border: none; cursor: pointer; padding: 5px; margin-left: 5px; }
+        /* 10-level color theme */
         .level-0 .task { background: #3c3c3e; }
-        .level-1 .task { background: #4c4c4e; }
-        .level-2 .task { background: #5c5c5e; }
-        .level-3 .task { background: #6c6c6e; }
-        .level-4 .task { background: #7c7c7e; }
+        .level-1 .task { background: #4a4a4a; }
+        .level-2 .task { background: #585858; }
+        .level-3 .task { background: #666666; }
+        .level-4 .task { background: #747474; }
+        .level-5 .task { background: #828282; }
+        .level-6 .task { background: #909090; }
+        .level-7 .task { background: #9e9e9e; }
+        .level-8 .task { background: #acacac; }
+        .level-9 .task { background: #bababa; }
+        /* Checkbox colors matching levels */
+        .level-0 input[type="checkbox"] { accent-color: #3c3c3e; }
+        .level-1 input[type="checkbox"] { accent-color: #4a4a4a; }
+        .level-2 input[type="checkbox"] { accent-color: #585858; }
+        .level-3 input[type="checkbox"] { accent-color: #666666; }
+        .level-4 input[type="checkbox"] { accent-color: #747474; }
+        .level-5 input[type="checkbox"] { accent-color: #828282; }
+        .level-6 input[type="checkbox"] { accent-color: #909090; }
+        .level-7 input[type="checkbox"] { accent-color: #9e9e9e; }
+        .level-8 input[type="checkbox"] { accent-color: #acacac; }
+        .level-9 input[type="checkbox"] { accent-color: #bababa; }
         /* Light mode adjustments */
         @media (prefers-color-scheme: light) {
             body { background: #fff; color: #000; }
             .project { background: #f9f9f9; }
             .level-0 .task { background: #e9e9e9; }
-            .level-1 .task { background: #d9d9d9; }
-            .level-2 .task { background: #c9c9c9; }
-            .level-3 .task { background: #b9b9b9; }
-            .level-4 .task { background: #a9a9a9; }
+            .level-1 .task { background: #dcdcdc; }
+            .level-2 .task { background: #cfcfcf; }
+            .level-3 .task { background: #c2c2c2; }
+            .level-4 .task { background: #b5b5b5; }
+            .level-5 .task { background: #a8a8a8; }
+            .level-6 .task { background: #9b9b9b; }
+            .level-7 .task { background: #8e8e8e; }
+            .level-8 .task { background: #818181; }
+            .level-9 .task { background: #747474; }
             .delete-btn { background: #e74c3c; }
             .delete-btn:hover { background: #c0392b; }
+            .level-0 input[type="checkbox"] { accent-color: #e9e9e9; }
+            .level-1 input[type="checkbox"] { accent-color: #dcdcdc; }
+            .level-2 input[type="checkbox"] { accent-color: #cfcfcf; }
+            .level-3 input[type="checkbox"] { accent-color: #c2c2c2; }
+            .level-4 input[type="checkbox"] { accent-color: #b5b5b5; }
+            .level-5 input[type="checkbox"] { accent-color: #a8a8a8; }
+            .level-6 input[type="checkbox"] { accent-color: #9b9b9b; }
+            .level-7 input[type="checkbox"] { accent-color: #8e8e8e; }
+            .level-8 input[type="checkbox"] { accent-color: #818181; }
+            .level-9 input[type="checkbox"] { accent-color: #747474; }
         }
         @media (max-width: 600px) { .project { width: 100%; } #projects { flex-direction: column; } .move-left, .move-right { display: none; } }
+        #history-buttons { margin-bottom: 10px; }
+        #undo-btn, #redo-btn { background: #555; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; margin-right: 5px; }
+        #undo-btn:hover, #redo-btn:hover { background: #666; }
     </style>
 </head>
 <body>
     <h1 style="font-size: 24px; margin-bottom: 10px;">Task Planner</h1>
+    <div id="history-buttons">
+        <button id="undo-btn" onclick="undo()">Undo</button>
+        <button id="redo-btn" onclick="redo()">Redo</button>
+    </div>
     <button class="add-btn" onclick="addProject()">+ Add Projects</button>
     <div id="projects"></div>
 
     <script>
         const projectsContainer = document.getElementById('projects');
+        let history = [];
+        let historyIndex = -1;
+
+        function saveState() {
+            const currentState = projectsContainer.innerHTML;
+            history = history.slice(0, historyIndex + 1);
+            history.push(currentState);
+            historyIndex++;
+        }
+
+        function undo() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                projectsContainer.innerHTML = history[historyIndex];
+                reattachEvents();
+            }
+        }
+
+        function redo() {
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                projectsContainer.innerHTML = history[historyIndex];
+                reattachEvents();
+            }
+        }
 
         function createProject(name = 'New Project') {
             const projectDiv = document.createElement('div');
             projectDiv.classList.add('project', 'draggable');
             projectDiv.draggable = true;
 
+            const headerDiv = document.createElement('div');
+            headerDiv.classList.add('project-header');
+
             const header = document.createElement('h2');
             header.contentEditable = true;
             header.textContent = name;
-            header.onblur = saveProjects;
+            header.onblur = () => saveProjects(true);
 
-            const addTaskBtn = document.createElement('button');
-            addTaskBtn.classList.add('add-btn');
-            addTaskBtn.textContent = '+ Add Task';
-            addTaskBtn.onclick = () => addTaskTo(projectDiv, null, false, false);
-
-            const addCategoryBtn = document.createElement('button');
-            addCategoryBtn.classList.add('add-btn');
-            addCategoryBtn.textContent = '+ Add Category';
-            addCategoryBtn.onclick = () => addTaskTo(projectDiv, null, false, true);
-
-            const deleteProjectBtn = document.createElement('button');
-            deleteProjectBtn.classList.add('delete-btn');
-            deleteProjectBtn.textContent = '×';
-            deleteProjectBtn.onclick = () => deleteElement(projectDiv);
+            const moveButtons = document.createElement('div');
+            moveButtons.classList.add('move-buttons');
 
             const moveLeftBtn = document.createElement('button');
             moveLeftBtn.classList.add('move-left');
@@ -93,15 +149,34 @@
             moveRightBtn.textContent = '→';
             moveRightBtn.onclick = () => moveProject(projectDiv, 1);
 
+            moveButtons.appendChild(moveLeftBtn);
+            moveButtons.appendChild(moveRightBtn);
+
+            const deleteProjectBtn = document.createElement('button');
+            deleteProjectBtn.classList.add('delete-btn');
+            deleteProjectBtn.textContent = '×';
+            deleteProjectBtn.onclick = () => deleteElement(projectDiv);
+
+            headerDiv.appendChild(header);
+            headerDiv.appendChild(moveButtons);
+            headerDiv.appendChild(deleteProjectBtn);
+
+            const addTaskBtn = document.createElement('button');
+            addTaskBtn.classList.add('add-btn');
+            addTaskBtn.textContent = '+ Add Task';
+            addTaskBtn.onclick = () => addTaskTo(projectDiv, null, false, false);
+
+            const addCategoryBtn = document.createElement('button');
+            addCategoryBtn.classList.add('add-btn', 'add-category-btn');
+            addCategoryBtn.textContent = '+ Add Category';
+            addCategoryBtn.onclick = () => addTaskTo(projectDiv, null, false, true);
+
             const taskList = document.createElement('ul');
             taskList.classList.add('taskList', 'level-0');
 
-            projectDiv.appendChild(header);
+            projectDiv.appendChild(headerDiv);
             projectDiv.appendChild(addTaskBtn);
             projectDiv.appendChild(addCategoryBtn);
-            projectDiv.appendChild(deleteProjectBtn);
-            projectDiv.appendChild(moveLeftBtn);
-            projectDiv.appendChild(moveRightBtn);
             projectDiv.appendChild(taskList);
             return projectDiv;
         }
@@ -111,7 +186,7 @@
             if (name) {
                 const newProject = createProject(name);
                 projectsContainer.appendChild(newProject);
-                saveProjects();
+                saveProjects(true);
             }
         }
 
@@ -137,6 +212,17 @@
             span.contentEditable = true;
             span.textContent = text;
             span.onkeydown = handleEnter;
+            span.onclick = () => {
+                if (span.textContent === 'New Task' || span.textContent === 'New Subtask' || span.textContent === 'New Category') {
+                    span.textContent = '';
+                }
+                const range = document.createRange();
+                range.selectNodeContents(span);
+                range.collapse(true);
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            };
 
             const addSubBtn = document.createElement('button');
             addSubBtn.classList.add('add-btn');
@@ -164,16 +250,16 @@
 
         function addTaskTo(projectDiv, parentLi = null, isSubtask = false, isCategory = false) {
             const taskList = isSubtask ? parentLi.querySelector('.subtasks') : projectDiv.querySelector('.taskList');
-            const newTask = createTask(isSubtask ? 'New Subtask' : 'New Task', isCategory);
+            const newTask = createTask(isSubtask ? 'New Subtask' : (isCategory ? 'New Category' : 'New Task'), isCategory);
             taskList.appendChild(newTask);
             updateArrowVisibility(newTask);
             const nestingLevel = getNestingLevel(taskList) + 1;
-            newTask.querySelector('.subtasks').classList.add(`level-${nestingLevel}`);
+            newTask.querySelector('.subtasks').classList.add(`level-${nestingLevel % 10}`);
             if (isSubtask) {
                 parentLi.classList.add('expanded');
                 parentLi.querySelector('.collapse-arrow').textContent = '▼';
             }
-            saveProjects();
+            saveProjects(true);
         }
 
         function getNestingLevel(element) {
@@ -190,7 +276,7 @@
             const li = this.parentElement.parentElement;
             li.classList.toggle('expanded');
             this.textContent = li.classList.contains('expanded') ? '▼' : '▶';
-            saveProjects();
+            saveProjects(true);
         }
 
         function toggleComplete() {
@@ -199,9 +285,9 @@
             const li = taskDiv.parentElement;
             const list = li.parentElement;
             if (this.checked) {
-                list.appendChild(li); // Move to bottom
+                list.appendChild(li);
             }
-            saveProjects();
+            saveProjects(true);
         }
 
         function handleEnter(e) {
@@ -223,12 +309,13 @@
             return element;
         }
 
-        function saveProjects() {
+        function saveProjects(saveToHistory = false) {
             const projectsData = Array.from(projectsContainer.children).map(project => ({
                 name: project.querySelector('h2').textContent,
                 tasks: project.querySelector('.taskList').innerHTML
             }));
             localStorage.setItem('projects', JSON.stringify(projectsData));
+            if (saveToHistory) saveState();
         }
 
         function loadProjects() {
@@ -245,7 +332,20 @@
                         updateArrowVisibility(li);
                     });
                     newProject.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.onchange = toggleComplete);
-                    newProject.querySelectorAll('span[contenteditable]').forEach(span => span.onkeydown = handleEnter);
+                    newProject.querySelectorAll('span[contenteditable]').forEach(span => {
+                        span.onkeydown = handleEnter;
+                        span.onclick = () => {
+                            if (span.textContent === 'New Task' || span.textContent === 'New Subtask' || span.textContent === 'New Category') {
+                                span.textContent = '';
+                            }
+                            const range = document.createRange();
+                            range.selectNodeContents(span);
+                            range.collapse(true);
+                            const sel = window.getSelection();
+                            sel.removeAllRanges();
+                            sel.addRange(range);
+                        };
+                    });
                     newProject.querySelectorAll('.add-btn').forEach(btn => {
                         if (btn.textContent === '+ Add Task') btn.onclick = () => addTaskTo(newProject, null, false, false);
                         else if (btn.textContent === '+ Add Category') btn.onclick = () => addTaskTo(newProject, null, false, true);
@@ -261,22 +361,19 @@
                         };
                     });
                     newProject.querySelectorAll('.subtasks').forEach(ul => {
-                        const level = getNestingLevel(ul);
+                        const level = getNestingLevel(ul) % 10;
                         ul.classList.add(`level-${level}`);
                     });
                     newProject.querySelector('.move-left').onclick = () => moveProject(newProject, -1);
                     newProject.querySelector('.move-right').onclick = () => moveProject(newProject, 1);
                 });
             }
+            saveState(); // Initial state
         }
 
         function deleteElement(element) {
-            if (element.classList.contains('project')) {
-                element.remove();
-            } else if (element.classList.contains('draggable')) {
-                element.remove();
-            }
-            saveProjects();
+            element.remove();
+            saveProjects(true);
         }
 
         function updateArrowVisibility(li) {
@@ -296,7 +393,7 @@
             const newIndex = index + direction;
             if (newIndex >= 0 && newIndex < projects.length) {
                 projectsContainer.insertBefore(project, direction > 0 ? projects[newIndex + 1] : projects[newIndex]);
-                saveProjects();
+                saveProjects(true);
             }
         }
 
@@ -320,7 +417,7 @@
                     }
                     dragging.classList.remove('dragging');
                     Array.from(container.querySelectorAll('li')).forEach(li => updateArrowVisibility(li));
-                    saveProjects();
+                    saveProjects(true);
                 }
             });
         }
@@ -338,9 +435,50 @@
             }, { offset: Number.NEGATIVE_INFINITY }).element;
         }
 
+        function reattachEvents() {
+            document.querySelectorAll('.project').forEach(project => {
+                project.querySelectorAll('.collapse-arrow').forEach(arrow => {
+                    const li = arrow.parentElement.parentElement;
+                    arrow.onclick = toggleCollapse;
+                    updateArrowVisibility(li);
+                });
+                project.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.onchange = toggleComplete);
+                project.querySelectorAll('span[contenteditable]').forEach(span => {
+                    span.onkeydown = handleEnter;
+                    span.onclick = () => {
+                        if (span.textContent === 'New Task' || span.textContent === 'New Subtask' || span.textContent === 'New Category') {
+                            span.textContent = '';
+                        }
+                        const range = document.createRange();
+                        range.selectNodeContents(span);
+                        range.collapse(true);
+                        const sel = window.getSelection();
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    };
+                });
+                project.querySelectorAll('.add-btn').forEach(btn => {
+                    if (btn.textContent === '+ Add Task') btn.onclick = () => addTaskTo(project, null, false, false);
+                    else if (btn.textContent === '+ Add Category') btn.onclick = () => addTaskTo(project, null, false, true);
+                    else btn.onclick = (e) => {
+                        const li = e.target.closest('li');
+                        addTaskTo(project, li, true, false);
+                    };
+                });
+                project.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.onclick = (e) => {
+                        const element = e.target.closest('li') || e.target.closest('.project');
+                        deleteElement(element);
+                    };
+                });
+                project.querySelector('.move-left').onclick = () => moveProject(project, -1);
+                project.querySelector('.move-right').onclick = () => moveProject(project, 1);
+            });
+            document.querySelectorAll('.taskList, .subtasks').forEach(ul => setupDragAndDrop(ul));
+            setupDragAndDrop(projectsContainer);
+        }
+
         loadProjects();
-        setupDragAndDrop(projectsContainer);
-        document.querySelectorAll('.taskList, .subtasks').forEach(ul => setupDragAndDrop(ul));
     </script>
 </body>
 </html>
